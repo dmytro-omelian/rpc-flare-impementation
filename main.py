@@ -1,6 +1,9 @@
 
-def print_hi(name):
-    pass
+def test_flare():
+    print('test_flare')
+    return 'test_flare'
+
 
 if __name__ == '__main__':
-    print_hi('PyCharm')
+
+    flare = test_flare()
