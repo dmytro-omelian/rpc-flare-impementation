@@ -1,6 +1,8 @@
 from src.flare import FLARE
-from src.retriever import Retriever
-
+from src.language_model import LanguageModel
+from src.retrieval_service import RetrievalService
+from src.search_engine_connector import SearchEngineConnector
+from src.knowledge_base import KnowledgeBase
 
 def test_flare():
     print('test_flare')
@@ -10,16 +12,22 @@ def test_flare():
 if __name__ == '__main__':
 
     input = input('Enter a prompt: ')
-    numbers_of_sentences = input('Enter the number of sentences to generate: ')
 
     knowledge_base_path = "data/knowledge_base.json"
-    retriever = Retriever(knowledge_base_path)
+    knowledge_base = KnowledgeBase(knowledge_base_path)
+    search_engine = SearchEngineConnector(knowledge_base_path)
+    language_model = LanguageModel()
 
-    flare_model = FLARE("http://localhost:5000")
 
-    next_sentence = flare_model.generate_text(prompt=input)
-    while numbers_of_sentences > 0:
+    retrieval_service = RetrievalService(language_model)
+    flare_model = FLARE(language_model, knowledge_base)
 
-        next_sentence = flare_model.generate_text(prompt=next_sentence)
-        numbers_of_sentences -= 1
+    generated_sentences = []
+    query_prompt = input
+    while True:
+        possible_next_sentence = flare_model.predict_next_sentence(query_prompt, generated_sentences)
+        next_sentence = retrieval_service.retrieve(possible_next_sentence)
+        generated_sentences.append(next_sentence)
+
+
 
