@@ -22,11 +22,17 @@ if __name__ == '__main__':
     query_prompt = "Generate summary about Joe Biden"
     while True:
         possible_next_sentence = flare_model.predict_next_sentence(query_prompt, generated_sentences)
-        next_sentence = retrieval_service.retrieve(possible_next_sentence)
-        if next_sentence is None:
+        while possible_next_sentence and retrieval_service.is_retrieval_query(possible_next_sentence):
+            possible_next_sentence = retrieval_service.retrieve(possible_next_sentence, query_prompt, generated_sentences)
+
+        if possible_next_sentence is None:
             break
-        print(next_sentence)
-        generated_sentences.append(next_sentence)
+
+        sentence = [token for token, prob in possible_next_sentence]
+        print(" ".join(sentence))
+        generated_sentences.append(possible_next_sentence)
+
+        # TODO write prints to files to show how the algorithm works
 
 
 
