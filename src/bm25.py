@@ -1,6 +1,7 @@
 import math
 from collections import Counter
 
+
 # source: https://medium.com/@evertongomede/understanding-the-bm25-ranking-algorithm-19f6d45c6ce
 class BM25:
     def __init__(self, documents):
@@ -33,7 +34,7 @@ class BM25:
             term_frequency = document.count(term)
             numerator = term_frequency * (self.k1 + 1)
             denominator = term_frequency + self.k1 * (
-                        1 - self.b + self.b * (document_length / self.avg_document_length))
+                    1 - self.b + self.b * (document_length / self.avg_document_length))
             score += idf * (numerator / denominator)
 
         return score

@@ -1,5 +1,6 @@
 import json
 
+
 class KnowledgeBase:
 
     def __init__(self, knowledge_base_path):
