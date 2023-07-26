@@ -1,0 +1,10 @@
+[
+    {
+        "wrong_token": "23",
+        "correct_token": ["20", 0.5]
+    },
+    {
+        "wrong_token": "Oblama",
+        "correct_token": ["Obama", 0.5]
+    }
+]

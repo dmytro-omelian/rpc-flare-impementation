@@ -46,11 +46,11 @@ class LanguageModel:
     def get_replacement_tokens(self, low_probability_tokens, user_input, generated_sentences):
         result = []
         for tokens in low_probability_tokens:
-            answer = " ".join(tokens)
+            answer = " ".join([token for token, prob in tokens])
 
             prompt = self.construct_zero_shot_question_generation_prompt(user_input, generated_sentences, answer)
-            question = self.get_answer(prompt)
-            replacement_tokens = self.get_answer(prompt) # FIXME question
+            question = self.get_question(prompt)
+            replacement_tokens = self.get_answer(question, tokens)
             result.append(replacement_tokens)
         return result
 
@@ -63,7 +63,28 @@ class LanguageModel:
         """
         return prompt
 
-    def get_answer(self, prompt):
-        return ["Answer", 0.3] # TODO implement this tuples of tokens and probabilities
+    def get_question(self, prompt):
+        # TODO implement this with gpt api
+        return "Question"
+
+    def get_answer(self, prompt, tokens):
+        # FIXME we don't need the tokens here (we use them to have a placeholder for the answer)
+
+        correct_answers = json.load(open("data/correct_answers.json", "r"))
+
+        for i, token in enumerate(tokens):
+            value, prob = token
+            replacement = self.contains_token(correct_answers, value)
+            if replacement is not None:
+                tokens[i] = replacement
+            else:
+                tokens[i] = [value, 0.5]
 
 
+        return tokens
+
+    def contains_token(self, correct_answers, token):
+        for obj in correct_answers:
+            if obj['wrong_token'] == token:
+                return obj['correct_token']
+        return None

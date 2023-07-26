@@ -22,13 +22,15 @@ class RetrievalService:
         result = []
         index = 0
         temp = []
+        replacement_tokens = [token for tokens in replacement_tokens for token in tokens]
         for token_and_prob in possible_next_sentence:
             token, prob = token_and_prob
             if prob > threshold:
                 if len(temp) > 0:
-                    result.append(replacement_tokens[index])
+                    for i in range(len(temp)):
+                        result.append(replacement_tokens[index])
+                        index += 1
                     temp = []
-                    index += 1
                 result.append(token_and_prob)
             else:
                 temp.append(token)
@@ -42,19 +44,18 @@ class RetrievalService:
         for token_and_prob in tokens_and_probs:
             token, prob = token_and_prob
             if prob < threshold:
-                temp.append(token)
+                temp.append(token_and_prob)
             else:
                 if len(temp) > 0:
                     low_probability_tokens.append(temp)
                     temp = []
-                temp.append(token)
         if len(temp) > 0:
             low_probability_tokens.append(temp)
         return low_probability_tokens
 
-    def is_retrieval_query(self, possible_next_sentence, trashold=0.2):
+    def is_retrieval_query(self, possible_next_sentence, threshold=0.2):
         for token_and_prob in possible_next_sentence:
             token, prob = token_and_prob
-            if prob < trashold:
+            if prob < threshold:
                 return True
         return False
