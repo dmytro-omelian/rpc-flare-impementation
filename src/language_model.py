@@ -77,6 +77,7 @@ class LanguageModel:
             replacement = self.contains_token(correct_answers, value)
             if replacement is not None:
                 tokens[i] = replacement
+                print(f'Replaced {value} with {replacement}')
             else:
                 tokens[i] = [value, 0.5]
 
